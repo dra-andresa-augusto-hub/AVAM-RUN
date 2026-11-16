@@ -1,0 +1,119 @@
+<html lang="pt-BR"><style>* { -webkit-text-size-adjust: 109.00000000000001% !important; }</style><head><style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AVAM RUN - Área do Aluno</title>
+<style>
+:root{--navy:#0A1F3D;--gold:#C9A86A;--light:#F4F2EC;--white:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--light);color:#1a1a1a}
+header{background:var(--navy);color:#fff;padding:22px 16px;text-align:center}header h1{margin:0;letter-spacing:2px}header p{margin:6px 0 0;color:var(--gold);font-weight:700}
+.wrap{max-width:720px;margin:0 auto;padding:16px}.card{background:var(--white);border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 4px 18px rgba(0,0,0,.07)}
+label{display:block;font-weight:700;margin:12px 0 6px}input,select,textarea{width:100%;padding:13px;border:1px solid #ddd;border-radius:10px;font-size:16px}
+.btn{display:block;width:100%;padding:14px;border:0;border-radius:12px;font-weight:800;font-size:16px;cursor:pointer;margin-top:12px}
+.btn-navy{background:var(--navy);color:#fff}.btn-gold{background:var(--gold);color:#0A1F3D}.btn-wpp{background:#25D366;color:#fff}
+.badge{display:inline-block;background:#e8f5e9;color:#1b5e20;padding:6px 10px;border-radius:999px;font-weight:700;font-size:13px}
+table{width:100%;border-collapse:collapse}th,td{padding:10px;border-bottom:1px solid #eee;text-align:left;font-size:14px}
+.small{font-size:13px;color:#666}.hidden{display:none}.treino{border-left:4px solid var(--gold);padding-left:12px;margin:10px 0}
+</style></head>
+<body>
+<header><h1>AVAM RUN</h1><p>A VIDA ACONTECE EM MOVIMENTO</p><div class="small" style="color:#fff;opacity:.8">Área do Aluno • Acesso com CPF + Código de Ativação</div></header>
+<div class="wrap">
+<div id="loginCard" class="card">
+<h2 style="margin:0">Entrar na minha assessoria</h2>
+<p class="small">Você recebeu seu código quando entrou na assessoria. Formato: <b>AVA + 4 números</b> • Ex: AVA2471</p>
+<label>Seu CPF</label><input id="cpf" placeholder="000.000.000-00" maxlength="14">
+<label>Código de Ativação</label><input id="codigo" placeholder="AVA0000" style="text-transform:uppercase">
+<button class="btn btn-navy" onclick="login()">ENTRAR NA MINHA PLANILHA →</button>
+<p id="loginErro" class="small" style="color:#c62828;font-weight:700"></p>
+<div class="card" style="background:#FFF8E1"><b>Não tem código?</b><br><span class="small">Fale com a AVAM RUN no WhatsApp e peça seu código de ativação.</span><button class="btn btn-wpp" onclick="wppAdmin('Olá! Quero meu código de ativação da AVAM RUN. Meu CPF é: ')">PEDIR CÓDIGO NO WHATSAPP</button></div>
+<p class="small">Seus dados ficam vinculados ao seu CPF. Sem CPF + código correto, ninguém entra.</p>
+</div>
+<div id="dash" class="hidden">
+<div class="card"><div style="display:flex;justify-content:space-between"><div><h2 id="olaAluno" style="margin:0"></h2><p class="small" id="infoAluno"></p><span class="badge">● ATIVO</span></div><button onclick="sair()" style="border:0;background:#eee;padding:10px 14px;border-radius:999px;font-weight:700">Sair</button></div>
+<button class="btn btn-wpp" onclick="wppAdmin('Olá! Sou aluno(a) AVAM RUN, preciso de ajuda com meu treino.')">FALAR COM A ASSESSORIA NO WHATSAPP</button></div>
+<div class="card"><h3 style="margin:0">🏃 Minha Planilha da Semana</h3><p class="small">Atualizada pela sua treinadora. Sempre confira aqui antes de treinar.</p><div id="planilha"></div></div>
+<div class="card"><h3 style="margin:0">✅ Registrar o que eu fiz</h3>
+<label>O que você fez hoje?</label><select id="treinoFeito"><option>Rodagem</option><option>Longão</option><option>Regenerativo</option><option>Tiros / Intervalado</option><option>Fortalecimento</option><option>Descanso</option></select>
+<label>Distância (km)</label><input id="dist" type="number" placeholder="Ex: 5">
+<label>Tempo (min)</label><input id="tempo" type="number" placeholder="Ex: 30">
+<label>Como você se sentiu? PSE 1-10</label><input id="pse" type="number" min="1" max="10" placeholder="Ex: 7">
+<label>Sentiu dor? Onde?</label><input id="dor" placeholder="Ex: Não / Joelho direito">
+<label>Comentário / Feedback</label><textarea id="coment" rows="3" placeholder="Conta como foi o treino..."></textarea>
+<button class="btn btn-gold" onclick="salvarTreino()">SALVAR MEU TREINO</button><p id="msgTreino" class="small"></p></div>
+<div class="card"><h3 style="margin:0">📅 Meus Treinos Registrados</h3><div id="meusTreinos"></div></div>
+<div class="card"><h3 style="margin:0">📣 Avisos &amp; Próximos Eventos</h3><div id="avisos"></div><p class="small">Plano AVAM RUN — 99,90 / mensal • Valor promocional, consulte condições • Fisioterapia com 40% de desconto em sessões de até 50 minutos.</p></div>
+</div>
+</div>
+<script>
+const FIREBASE_CONFIG = null;
+const ADMIN_WPP = "5531997867911";
+function onlyDigits(s){return (s||"").replace(/\D/g,"")}
+function maskCPF(v){v=onlyDigits(v).slice(0,11);return v.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2")}
+document.getElementById('cpf').addEventListener('input',e=>{e.target.value=maskCPF(e.target.value)});
+function getDB(k,def){try{return JSON.parse(localStorage.getItem(k))||def}catch(e){return def}}
+function setDB(k,v){localStorage.setItem(k,JSON.stringify(v))}
+function wppAdmin(msg){window.open("https://wa.me/"+ADMIN_WPP+"?text="+encodeURIComponent(msg),"_blank")}
+let alunoAtual=null;
+function login(){
+  const cpf=document.getElementById('cpf').value.trim();
+  const codigo=document.getElementById('codigo').value.trim().toUpperCase();
+  const erro=document.getElementById('loginErro');
+  if(!cpf||!codigo){erro.textContent="Preencha CPF e código de ativação.";return}
+  const codigos=getDB('avam_codes',[]);
+  if(!/^AVA[0-9]{4}$/.test(codigo)){erro.textContent="Código inválido. Formato correto: AVA + 4 números. Ex: AVA2471";return}
+  const achado=codigos.find(c=>c.codigo===codigo && c.cpf===cpf);
+  if(!achado){erro.textContent="Código ou CPF não encontrado. Confira com a assessoria. Peça para a admin gerar seu código em admin-codigos.html";return}
+  if(achado.status==='bloqueado'){erro.textContent="Seu acesso está bloqueado. Fale com a assessoria no WhatsApp.";return}
+  alunoAtual=achado; localStorage.setItem('avam_sessao_aluno',JSON.stringify(achado));
+  mostrarDash();
+}
+function mostrarDash(){
+  document.getElementById('loginCard').classList.add('hidden');
+  document.getElementById('dash').classList.remove('hidden');
+  document.getElementById('olaAluno').textContent="Olá, "+(alunoAtual.nome||"Atleta")+"!";
+  document.getElementById('infoAluno').textContent="CPF: "+alunoAtual.cpf+" • Código: "+alunoAtual.codigo+" • Plano: "+(alunoAtual.plano||"AVAM RUN");
+  renderPlanilha(); renderTreinos(); renderAvisos();
+}
+function renderPlanilha(){
+  const plans=getDB('avam_planilhas',[]).filter(p=>p.cpf===alunoAtual.cpf);
+  const el=document.getElementById('planilha');
+  if(!plans.length){el.innerHTML="<p class='small'>Sua planilha ainda não foi publicada. Aguarde sua treinadora publicar em admin-gestao.html ou fale no WhatsApp.</p>";return}
+  const p=plans[plans.length-1];
+  el.innerHTML="<p class='small'><b>Semana:</b> "+(p.semana||"")+" • <b>Atualizado em:</b> "+(p.data||"")+"</p><table><tr><th>Dia</th><th>Treino</th><th>Detalhe</th><th>Zona</th></tr>"+p.itens.map(i=>"<tr><td>"+i.dia+"</td><td>"+i.tipo+"</td><td>"+i.detalhe+"</td><td>"+i.zona+"</td></tr>").join("")+"</table>";
+}
+function salvarTreino(){
+  const t={cpf:alunoAtual.cpf, nome:alunoAtual.nome, data:new Date().toLocaleDateString('pt-BR'), treino:document.getElementById('treinoFeito').value, dist:document.getElementById('dist').value, tempo:document.getElementById('tempo').value, pse:document.getElementById('pse').value, dor:document.getElementById('dor').value, coment:document.getElementById('coment').value};
+  const arr=getDB('avam_treinos',[]); arr.push(t); setDB('avam_treinos',arr);
+  document.getElementById('msgTreino').textContent="✅ Treino salvo! Sua treinadora já consegue ver no painel de gestão.";
+  renderTreinos();
+}
+function renderTreinos(){
+  const arr=getDB('avam_treinos',[]).filter(x=>x.cpf===alunoAtual.cpf).reverse();
+  document.getElementById('meusTreinos').innerHTML=arr.length?arr.map(x=>"<div class='treino'><b>"+x.data+" — "+x.treino+"</b><br><span class='small'>"+(x.dist||"-")+" km • "+(x.tempo||"-")+" min • PSE "+(x.pse||"-")+" • Dor: "+(x.dor||"Não")+"<br>"+(x.coment||"")+"</span></div>").join(""):"<p class='small'>Nenhum treino registrado ainda.</p>";
+}
+function renderAvisos(){
+  const av=getDB('avam_avisos',[]);
+  document.getElementById('avisos').innerHTML=av.length?av.map(a=>"<p>• <b>"+a.titulo+"</b><br><span class='small'>"+a.texto+"</span></p>").join(""):"<p class='small'>Nenhum aviso no momento.</p>";
+}
+function sair(){localStorage.removeItem('avam_sessao_aluno');location.reload()}
+const sess=localStorage.getItem('avam_sessao_aluno'); if(sess){try{alunoAtual=JSON.parse(sess); mostrarDash()}catch(e){}}
+</script><script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script>
+</body></html>
